@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration debug ="false">
+  <property name="log.charset" value="UTF-8" />
+  <!--<property name="log.pattern" value="" />-->
+  <property name="log.context.name" value="log-test" />
+
+  <contextName>${log.context.name}</contextName>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <charset>${log.charset}</charset>
+      <Pattern>%d %-4relative %highlight(%-5level) %X{req.remoteHost} %X{req.xForwardedFor} %logger{35}\(%line\) - %msg%n</Pattern>
+    </encoder>
+  </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/stdout.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- daily rollover. Make sure the path matches the one in the file element or else
+       the rollover logs are placed in the working directory. -->
+      <fileNamePattern>./logs/stdout.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxFileSize>100MB</maxFileSize>
+      <!-- keep 30 days' worth of history -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <charset>${log.charset}</charset>
+      <pattern>%d{HH:mm:ss.SSS} %-5relative %-5level %X{req.remoteHost} %X{req.xForwardedFor} %logger{35}\(%line\) - %msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
+  </appender>
+  <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/stderr.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>./logs/stderr.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxFileSize>100MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <charset>${log.charset}</charset>
+      <pattern>%d{HH:mm:ss.SSS} %-5relative %-5level %X{req.remoteHost} %X{req.xForwardedFor} %logger{35}\(%line\) - %msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <!-- error level only -->
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+  <appender name="PROGRAM" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/program.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!-- daily rollover. Make sure the path matches the one in the file element or else
+       the rollover logs are placed in the working directory. -->
+      <fileNamePattern>./logs/batch.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxFileSize>100MB</maxFileSize>
+      <!-- keep 30 days' worth of history -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <charset>${log.charset}</charset>
+      <pattern>%d{HH:mm:ss.SSS} %-5relative %-5level %logger{35}\(%line\) - %msg%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
+  </appender>
+  <logger name="com.zl.test.logtest.program" level="INFO" additivity="false">
+    <appender-ref ref="PROGRAM"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+  <!--<root level="WARN">-->
+  <root level="INFO">
+  <!--<root level="DEBUG">-->
+  <!--<root level="ERROR">-->
+    <appender-ref ref="CONSOLE"></appender-ref>
+    <appender-ref ref="STDOUT"></appender-ref>
+    <appender-ref ref="ERROR"></appender-ref>
+  </root>
+</configuration>
